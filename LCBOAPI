@@ -1,0 +1,167 @@
+Login as: root
+root@127.0.0.1’s password: CIND719hdp
+
+hadoop fs -ls /user/lab;
+
+hadoop fs -put /root/products.csv /user/lab/root;
+hadoop fs -put /root/stores.csv /user/lab/root;
+hadoop fs -put /root/inventories.csv /user/lab/root;
+
+hive;
+
+show databases;
+use capstone;
+
+##the following code saves dates (in YYYY-MM-DD format) as strings. To be converted later
+
+create table capstone.products(
+id int,
+is_dead boolean,
+name string,
+tags string,
+is_discontinued string,
+prince_in_cents int,
+regular_price_in_cents int,
+limited_time_offer_savings_in_cents int,
+limited_time_offer_ends_on string,
+bonus_reward_miles int,
+bonus_reward_miles_ends_on string,
+stock_type string,
+primary_category string,
+secondary_cateogry string, 
+origin string,
+package string, 
+package_unit_type string,
+package_unit_volume_in_milliliters int,
+total_package_units int,
+volume_in_milliliters int,
+alcohol_content int,
+price_per_liter_of_alcohol_in_cents int,
+price_per_liter_in_cents int,
+inventory_count int,
+inventory_volume_in_milliliters int,
+inventory_price_in_cents int,
+sugar_content string,
+producer_name string,
+released_on string,
+has_value_added_promotion boolean,
+has_limited_time_offer boolean,
+has_bonus_reward_miles boolean,
+is_seasonal boolean,
+is_vqa boolean,
+is_kosher boolean,
+value_added_promotion_description string,
+description string,
+serving_suggestion string,
+tasting_note string,
+updated_at string,
+image_thumb_url string,
+image_url string,
+varietal string,
+style string,
+tertiary_category string,
+sugar_in_grams_per_liter int)
+row format delimited
+fields terminated by '\t';
+
+create table capstone.stores(
+id int,
+is_dead boolean,
+name string,
+tags string,
+address_line_1 string,
+address_line_2 string,
+city string,
+postal_code string,
+telephone string,
+fax string,
+latitude string,
+longitude string,
+products_count int,
+inventory_count int,
+inventory_price_in_cents int,
+inventory_volume_in_milliliters int,
+has_wheelchair_accessibility boolean,
+has_bilingual_services boolean,
+has_product_consultant boolean,
+has_tasting_bar boolean,
+has_beer_cold_room boolean,
+has_special_occasion_permits boolean,
+has_vintages_corner boolean,
+has_parking boolean,
+has_transit_access boolean,
+sunday_open int,
+sunday_close int,
+monday_open int,
+monday_close int,
+tuesday_open int,
+tuesday_close int,
+wednesday_open int,
+wednesday_close int,
+thursday_open int,
+thursday_close int,
+friday_open int,
+friday_close int,
+saturday_open int,
+saturday_close int,
+updated_at string)
+row format delimited
+fields terminated by '\t';
+
+create table capstone.inventories(
+product_id int,
+store_id int,
+is_dead boolean,
+quantity int, 
+reported_on string,
+updated_at int)
+row format delimited
+fields terminated by '\t';
+
+##be wary of copy/pasting these following load statements as the single
+##quotes convert to a format that will cause an error in the code. 
+
+load data inpath ‘/user/lab/root/products.csv’
+overwrite into table capstone.products;
+
+load data inpath ‘/user/lab/root/stores.csv’
+overwrite into table capstone.stores;
+
+load data inpath ‘/user/lab/root/inventories.csv’
+overwrite into table capstone.inventories;
+
+
+
+##Database now set up, time to clean, sort, prune the data.
+
+
+
+##Analysis - different bits of code to analyze data
+
+describe products;
+describe stores;
+describe inventories;
+
+select count(*) from capstone.products;
+
+select XXXX from capstone.XXXXX
+where substr(XXXXXX) = XXX;
+
+
+SELECT colname, colname2, count(colname) as COLNAMEXXX
+FROM capstone.XXXX
+GROUP BY COLNAMEXXX
+ORDER BY COLVALUEXXX DESC 
+LIMIT 20;
+
+
+##JOINS I CREATED
+create table capstone.combined as
+select a.id, a.name, b.store_id, b.is_dead, b.quantity, b.reported_on, b.updated_at
+from capstone.products a JOIN capstone.inventories b
+on a.id = b.product_id;
+
+create talbe capstone.combined2 as
+select a.id, a.name, a.store_id, a.is_dead, a.quantity, a.reported_on, a.updated_at, b.name
+from capstone.combined a JOIN capstone.stores b
+on a.store_id = b.id
