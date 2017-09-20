@@ -1,13 +1,15 @@
 Login as: root
 root@127.0.0.1’s password: CIND719hdp
 
-hadoop fs -ls /user/lab;
+hadoop fs -ls /user/lab/root
 
-hadoop fs -put /root/products.csv /user/lab/root;
-hadoop fs -put /root/stores.csv /user/lab/root;
-hadoop fs -put /root/inventories.csv /user/lab/root;
+hadoop fs -put /root/products.csv /user/lab/root/products.csv
+hadoop fs -put /root/stores.csv /user/lab/root/stores.csv
+hadoop fs -put /root/inventories.csv /user/lab/root/inventories.csv
 
-hive;
+hadoop fs -ls /user/lab/root
+
+hive
 
 show databases;
 use capstone;
@@ -95,8 +97,7 @@ sunday_close int,
 monday_open int,
 monday_close int,
 tuesday_open int,
-tuesday_close int,
-wednesday_open int,
+tuesday_close intwednesday_open int,
 wednesday_close int,
 thursday_open int,
 thursday_close int,
@@ -118,16 +119,18 @@ updated_at int)
 row format delimited
 fields terminated by '\t';
 
-##be wary of copy/pasting these following load statements as the single
-##quotes convert to a format that will cause an error in the code. 
+show tables;
 
-load data inpath ‘/user/lab/root/products.csv’
+##be wary of copy/pasting these following load statements as the single
+##quotes convert to a format that will cause an error in the code. ' vs `
+
+load data inpath '/user/lab/root/products.csv'
 overwrite into table capstone.products;
 
-load data inpath ‘/user/lab/root/stores.csv’
+load data inpath '/user/lab/root/stores.csv'
 overwrite into table capstone.stores;
 
-load data inpath ‘/user/lab/root/inventories.csv’
+load data inpath '/user/lab/root/inventories.csv'
 overwrite into table capstone.inventories;
 
 
